@@ -1,0 +1,245 @@
+# ============================================
+# Python
+# ============================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# ============================================
+# Environments & Secrets (CRITICAL!)
+# ============================================
+
+# Environment files with API keys
+.env
+.env.*
+!.env.example
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# API keys and secrets (be explicit)
+**/secrets.json
+**/credentials.json
+**/*_secrets.py
+**/*_credentials.py
+**/config_local.py
+.secrets/
+secrets/
+
+# ============================================
+# LLM & AI Specific
+# ============================================
+
+# LangSmith / LangChain
+.langsmith/
+.langchain/
+langsmith_cache/
+langchain_cache/
+
+# Phoenix (Arize AI)
+.phoenix/
+phoenix_data/
+phoenix.db
+*.phoenix
+
+# Vector Databases
+chroma_db/
+*.chroma
+pinecone_cache/
+.faiss/
+*.faiss
+*.index
+embeddings_cache/
+
+# Model caches
+.cache/
+models/
+*.gguf
+*.bin
+*.safetensors
+model_cache/
+transformers_cache/
+huggingface_cache/
+
+# LangGraph checkpoints
+checkpoints/
+*.checkpoint
+.checkpoints/
+
+# Evaluation data (keep datasets, exclude outputs)
+evaluations/outputs/
+eval_results/
+*.eval.json
+
+# Cost tracking exports (sensitive!)
+costs/
+cost_reports/
+*_costs.json
+*_usage.json
+
+# ============================================
+# Data & Documents (SENSITIVE!)
+# ============================================
+
+# User data and documents
+data/
+documents/
+uploads/
+user_data/
+*.pdf
+*.docx
+*.xlsx
+*.csv
+!examples/*.csv  # Keep example CSVs
+
+# Logs and temporary files
+logs/
+*.log
+*.log.*
+temp/
+tmp/
+.tmp/
+
+# Exclude old files directory
+_OldFiles/
+**/_OldFiles/
+
+# Exclude Word documents in root (strategic notes)
+/*.docx
+/*.doc
+
+# OneDrive sync files
+*.tmp
+~$*
+
+# ============================================
+# Development Tools
+# ============================================
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+*-checkpoint.ipynb
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+.idea_modules/
+
+# Spyder
+.spyderproject
+.spyproject
+
+# ============================================
+# Operating System
+# ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================
+# Project Specific
+# ============================================
+
+# Local development overrides
+*_local.py
+*_local.json
+local_config.py
+
+# Experiment outputs (keep organized experiments, ignore temp)
+experiments/temp/
+experiments/scratch/
+
+# Test data (exclude large test files)
+tests/fixtures/*.large
+tests/data/*.pdf
+
+# Documentation builds
+docs/_build/
+site/
+
+# Backup files
+*.bak
+*.swp
+*.swo
+*~
+
+# ============================================
+# Keep These (Explicit Exceptions)
+# ============================================
+
+# Keep example files
+!examples/
+!examples/**/*.py
+!.env.example
+!config.example.py
+
+# Keep empty directories with .gitkeep
+!**/.gitkeep
