@@ -93,8 +93,12 @@ class TransformationError(DataProcessingError):
     pass
 
 
-class ValidationError(DataProcessingError):
-    """Raised when data validation fails."""
+class DataValidationError(DataProcessingError):
+    """
+    Raised when data validation fails.
+
+    Note: Renamed from ValidationError to avoid collision with Pydantic's ValidationError.
+    """
     pass
 
 
@@ -225,6 +229,18 @@ class DependencyError(AgenticAIError):
     def __init__(self, message: str, dependency: str, **kwargs):
         super().__init__(message, recoverable=False, **kwargs)
         self.dependency = dependency
+
+
+class BudgetExceededError(AgenticAIError):
+    """
+    Raised when daily budget limit is exceeded.
+
+    This error is not recoverable without manual intervention
+    (increasing budget or resetting cost tracker).
+    """
+
+    def __init__(self, message: str, **kwargs):
+        super().__init__(message, recoverable=False, **kwargs)
 
 
 # ============================================================================

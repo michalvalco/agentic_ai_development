@@ -191,6 +191,26 @@ class CostTracker:
         )
 
         with self._lock:
+            # Budget enforcement - check before adding cost
+            from .config import settings
+            from .exceptions import BudgetExceededError
+            from .logger import get_logger
+
+            logger = get_logger(__name__)
+
+            if self.total_cost + cost > settings.max_daily_budget_usd:
+                logger.error(
+                    "budget_exceeded",
+                    current_cost=self.total_cost,
+                    attempted_cost=cost,
+                    budget=settings.max_daily_budget_usd,
+                    operation=operation
+                )
+                raise BudgetExceededError(
+                    f"Daily budget exceeded: ${self.total_cost + cost:.4f} > "
+                    f"${settings.max_daily_budget_usd}. Blocking operation: {operation}"
+                )
+
             self.total_cost += cost
             self.total_calls += 1
 

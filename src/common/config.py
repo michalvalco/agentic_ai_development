@@ -143,6 +143,12 @@ class Settings(BaseSettings):
         le=300.0,
         description="Default operation timeout"
     )
+    max_daily_budget_usd: float = Field(
+        default=50.0,
+        ge=0.0,
+        le=1000.0,
+        description="Maximum daily LLM spend in USD (safety limit)"
+    )
 
     # ========================================================================
     # Database Settings
