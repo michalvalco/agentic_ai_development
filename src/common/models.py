@@ -16,7 +16,7 @@ Reference: docs/PKB/pydantic_validation.md
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
+from typing import Any, Dict, List, Optional
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field, field_validator, ConfigDict
@@ -138,53 +138,6 @@ class Context(BaseModel):
 
 
 # ============================================================================
-# Result Types
-# ============================================================================
-
-T = TypeVar('T')
-E = TypeVar('E')
-
-
-class Success(BaseModel, Generic[T]):
-    """
-    Represents a successful operation result.
-
-    Attributes:
-        value: The successful result value
-        metadata: Additional information about the operation
-    """
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    value: T
-    metadata: Dict[str, Any] = Field(default_factory=dict)
-
-
-class Failure(BaseModel, Generic[E]):
-    """
-    Represents a failed operation result.
-
-    Attributes:
-        error: The error that occurred
-        context: Human-readable context about the failure
-        recoverable: Whether the error can be recovered from
-        error_type: Type of the error for pattern matching
-    """
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    error: E
-    context: str
-    recoverable: bool = False
-    error_type: str = Field(default="UnknownError")
-
-
-# Note: We cannot create a generic type alias for Result in Python <3.12
-# that allows Result[T, E]. Instead, use Union[Success[T], Failure[E]] directly
-# in type hints where needed.
-
-
-# ============================================================================
 # Token Tracking
 # ============================================================================
 
@@ -277,22 +230,6 @@ class ResponseMetadata(BaseModel):
         description="Response timestamp"
     )
 
-
-class CapabilityResponse(BaseModel, Generic[T]):
-    """
-    Standard response format for all capabilities.
-
-    Attributes:
-        result: Result of the operation (Success or Failure)
-        metadata: Response metadata for observability
-    """
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    result: Union[Success[T], Failure[Exception]]
-    metadata: ResponseMetadata
-
-
 # ============================================================================
 # Health Check
 # ============================================================================
@@ -330,40 +267,4 @@ class HealthCheck(BaseModel):
 # ============================================================================
 # Utility Functions
 # ============================================================================
-
-def create_success(value: T, **metadata) -> Success[T]:
-    """
-    Create a Success result with optional metadata.
-
-    Args:
-        value: The successful result value
-        **metadata: Additional metadata key-value pairs
-
-    Returns:
-        Success instance
-    """
-    return Success(value=value, metadata=metadata)
-
-
-def create_failure(
-    error: Exception,
-    context: str,
-    recoverable: bool = False
-) -> Failure[Exception]:
-    """
-    Create a Failure result from an exception.
-
-    Args:
-        error: The exception that occurred
-        context: Human-readable context
-        recoverable: Whether the error is recoverable
-
-    Returns:
-        Failure instance
-    """
-    return Failure(
-        error=error,
-        context=context,
-        recoverable=recoverable,
-        error_type=type(error).__name__
-    )
+# (Removed create_success and create_failure - Result pattern no longer used)
