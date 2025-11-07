@@ -10,6 +10,7 @@ Design Principles:
 - Support both context manager and decorator patterns
 - Generate detailed cost reports
 - Thread-safe for concurrent operations
+- Load pricing from external config (pricing_config.yaml)
 
 Usage:
     # Context manager
@@ -27,36 +28,89 @@ from contextlib import contextmanager, asynccontextmanager
 from dataclasses import dataclass, field
 from datetime import datetime
 from functools import wraps
+from pathlib import Path
 from threading import Lock
 from typing import Any, Callable, Dict, List, Optional
+
+import yaml
 
 from .models import LLMCall, TokenCount
 
 
 # ============================================================================
-# Cost Configuration (as of 2025-01)
+# Pricing Configuration Loader
 # ============================================================================
 
-# Anthropic Claude pricing (per million tokens)
-ANTHROPIC_PRICING = {
-    "claude-3-opus-20240229": {"input": 15.00, "output": 75.00},
-    "claude-3-sonnet-20240229": {"input": 3.00, "output": 15.00},
-    "claude-3-5-sonnet-20240620": {"input": 3.00, "output": 15.00},
-    "claude-sonnet-4-20250514": {"input": 3.00, "output": 15.00},
-    "claude-3-haiku-20240307": {"input": 0.25, "output": 1.25},
-}
+def load_pricing_config() -> Dict[str, Dict[str, float]]:
+    """
+    Load LLM pricing from external YAML configuration.
+    
+    Returns:
+        Dictionary mapping model names to pricing info
+    
+    Raises:
+        FileNotFoundError: If pricing_config.yaml not found
+        yaml.YAMLError: If config file is malformed
+    """
+    config_path = Path(__file__).parent.parent.parent / "pricing_config.yaml"
+    
+    if not config_path.exists():
+        # Fallback to hardcoded pricing if config file missing
+        return _get_fallback_pricing()
+    
+    try:
+        with open(config_path) as f:
+            config = yaml.safe_load(f)
+        
+        # Convert to expected format
+        pricing = {}
+        for model_name, model_config in config.get('models', {}).items():
+            pricing[model_name] = {
+                "input": model_config['input_cost_per_1m_tokens'],
+                "output": model_config['output_cost_per_1m_tokens']
+            }
+        
+        return pricing
+    except Exception as e:
+        # Log warning and fall back to hardcoded pricing
+        import warnings
+        warnings.warn(
+            f"Failed to load pricing_config.yaml: {e}. "
+            "Using fallback pricing.",
+            UserWarning
+        )
+        return _get_fallback_pricing()
 
-# OpenAI pricing (per million tokens)
-OPENAI_PRICING = {
-    "gpt-4o": {"input": 5.00, "output": 15.00},
-    "gpt-4o-mini": {"input": 0.15, "output": 0.60},
-    "gpt-4-turbo": {"input": 10.00, "output": 30.00},
-    "gpt-4": {"input": 30.00, "output": 60.00},
-    "gpt-3.5-turbo": {"input": 0.50, "output": 1.50},
-}
 
-# Combined pricing lookup
-MODEL_PRICING = {**ANTHROPIC_PRICING, **OPENAI_PRICING}
+def _get_fallback_pricing() -> Dict[str, Dict[str, float]]:
+    """
+    Fallback pricing if config file unavailable.
+    
+    Note: These prices may be outdated. Update pricing_config.yaml instead.
+    """
+    # Anthropic Claude pricing (per million tokens) - as of 2025-11-07
+    anthropic = {
+        "claude-3-opus-20240229": {"input": 15.00, "output": 75.00},
+        "claude-3-sonnet-20240229": {"input": 3.00, "output": 15.00},
+        "claude-3-5-sonnet-20240620": {"input": 3.00, "output": 15.00},
+        "claude-sonnet-4-20250514": {"input": 3.00, "output": 15.00},
+        "claude-3-haiku-20240307": {"input": 0.25, "output": 1.25},
+    }
+    
+    # OpenAI pricing (per million tokens) - as of 2025-11-07
+    openai = {
+        "gpt-4o": {"input": 5.00, "output": 15.00},
+        "gpt-4o-mini": {"input": 0.15, "output": 0.60},
+        "gpt-4-turbo": {"input": 10.00, "output": 30.00},
+        "gpt-4": {"input": 30.00, "output": 60.00},
+        "gpt-3.5-turbo": {"input": 0.50, "output": 1.50},
+    }
+    
+    return {**anthropic, **openai}
+
+
+# Load pricing at module initialization
+MODEL_PRICING = load_pricing_config()
 
 
 # ============================================================================
