@@ -345,25 +345,31 @@ class Settings(BaseSettings):
 
 
 @lru_cache()
-def get_settings() -> Settings:
+def get_settings(validate: bool = False) -> Settings:
     """
     Get cached settings instance.
 
     Uses lru_cache to ensure settings are only loaded once.
     Call this function to access application settings.
+    
+    Args:
+        validate: Whether to validate required keys (default: False for testing)
 
     Returns:
         Settings instance
 
     Example:
         >>> from src.common.config import get_settings
-        >>> settings = get_settings()
+        >>> settings = get_settings(validate=True)
         >>> print(settings.default_model)
     """
     settings = Settings()
-    settings.validate_required_keys()
+    if validate:
+        settings.validate_required_keys()
     return settings
 
 
 # Singleton instance for convenient access
-settings = get_settings()
+# Note: Validation is deferred to allow testing without real API keys
+# In production, call get_settings(validate=True) to ensure keys are present
+settings = get_settings(validate=False)
