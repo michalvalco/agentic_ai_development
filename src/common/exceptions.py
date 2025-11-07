@@ -93,8 +93,12 @@ class TransformationError(DataProcessingError):
     pass
 
 
-class ValidationError(DataProcessingError):
-    """Raised when data validation fails."""
+class DataValidationError(DataProcessingError):
+    """
+    Raised when data validation fails.
+    
+    Note: Renamed from ValidationError to avoid collision with pydantic.ValidationError
+    """
     pass
 
 

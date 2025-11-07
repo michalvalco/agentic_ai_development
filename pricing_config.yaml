@@ -1,0 +1,54 @@
+# LLM Pricing Configuration
+# All prices in USD per million tokens
+# Last updated: 2025-11-07
+
+models:
+  # Anthropic Claude Models
+  claude-sonnet-4-20250514:
+    input_cost_per_1m_tokens: 3.00
+    output_cost_per_1m_tokens: 15.00
+    provider: anthropic
+    
+  claude-opus-4-20250514:
+    input_cost_per_1m_tokens: 15.00
+    output_cost_per_1m_tokens: 75.00
+    provider: anthropic
+    
+  claude-haiku-3-20240307:
+    input_cost_per_1m_tokens: 0.25
+    output_cost_per_1m_tokens: 1.25
+    provider: anthropic
+  
+  # OpenAI GPT Models
+  gpt-4o:
+    input_cost_per_1m_tokens: 5.00
+    output_cost_per_1m_tokens: 15.00
+    provider: openai
+    
+  gpt-4o-mini:
+    input_cost_per_1m_tokens: 0.15
+    output_cost_per_1m_tokens: 0.60
+    provider: openai
+    
+  gpt-4-turbo:
+    input_cost_per_1m_tokens: 10.00
+    output_cost_per_1m_tokens: 30.00
+    provider: openai
+    
+  gpt-3.5-turbo:
+    input_cost_per_1m_tokens: 0.50
+    output_cost_per_1m_tokens: 1.50
+    provider: openai
+
+# Configuration metadata
+last_updated: "2025-11-07"
+source: "Provider documentation"
+notes: |
+  Pricing is subject to change by providers. Update this file when:
+  1. Providers announce price changes
+  2. New models are released
+  3. Monthly reconciliation with actual billing
+  
+  To update pricing:
+  - Anthropic: https://www.anthropic.com/pricing
+  - OpenAI: https://openai.com/pricing

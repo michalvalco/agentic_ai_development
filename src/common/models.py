@@ -179,8 +179,9 @@ class Failure(BaseModel, Generic[E]):
     error_type: str = Field(default="UnknownError")
 
 
-# Type alias for Result pattern
-Result = Union[Success[T], Failure[E]]
+# Note: We cannot create a generic type alias for Result in Python <3.12
+# that allows Result[T, E]. Instead, use Union[Success[T], Failure[E]] directly
+# in type hints where needed.
 
 
 # ============================================================================
@@ -288,7 +289,7 @@ class CapabilityResponse(BaseModel, Generic[T]):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    result: Result[T, Exception]
+    result: Union[Success[T], Failure[Exception]]
     metadata: ResponseMetadata
 
 
